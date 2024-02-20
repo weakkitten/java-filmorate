@@ -2,12 +2,12 @@ package ru.yandex.practicum.filmorate.controller;
 
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
-import jakarta.validation.ValidationException;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.web.bind.annotation.*;
 
 import java.time.LocalDate;
 import java.util.HashMap;
+import ru.yandex.practicum.filmorate.exception.ValidationException;
 import ru.yandex.practicum.filmorate.model.User;
 import ru.yandex.practicum.filmorate.utils.LocalDateAdapter;
 
@@ -39,7 +39,7 @@ public class UserController {
             log.debug("Обновление прошло успешно");
         } else {
             log.debug("Пользователь не совпадает");
-            throw new ValidationException();
+            throw new ValidationException("Пользователь не совпадает");
         }
     }
 

@@ -2,9 +2,9 @@ package ru.yandex.practicum.filmorate.controller;
 
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
-import jakarta.validation.ValidationException;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.web.bind.annotation.*;
+import ru.yandex.practicum.filmorate.exception.ValidationException;
 import ru.yandex.practicum.filmorate.model.Film;
 import ru.yandex.practicum.filmorate.utils.LocalDateAdapter;
 
@@ -28,7 +28,7 @@ public class FilmController {
             filmMap.put(film.getId(), film);
             log.debug("Фильм успешно добавлен");
         } else {
-            throw new ValidationException();
+            throw new ValidationException("Фильмы не совпадают");
         }
         return film.toString();
     }
@@ -43,7 +43,7 @@ public class FilmController {
             log.debug("Замена успешно произведена");
         } else {
             log.debug("Фильмы разные");
-            throw new ValidationException();
+            throw new ValidationException("Фильмы разные");
         }
     }
 
