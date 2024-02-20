@@ -30,6 +30,7 @@ class FilmorateApplicationTests {
 		SpringApplication.run(FilmorateApplication.class);
 		gsonBuilder.registerTypeAdapter(LocalDate.class, new LocalDateAdapter());
 		Gson gson = gsonBuilder.create();
+		Film fil = new Film(0, "", "", LocalDate.now(), 3600);
 		Film film = new Film(0, "Пользователь", "Описание", LocalDate.now(), 3600);
 		User user = new User(0,"bii99@rambler.ru", "ilyabykov", "Имя",
 				LocalDate.ofYearDay(1999, 207));
