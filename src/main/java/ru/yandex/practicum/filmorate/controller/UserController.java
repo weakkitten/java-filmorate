@@ -17,6 +17,7 @@ import ru.yandex.practicum.filmorate.utils.LocalDateAdapter;
 public class UserController {
     private final HashMap<Integer,User> userList = new HashMap<>();
     private final GsonBuilder gsonBuilder = new GsonBuilder();
+
     @PostMapping()
     public void createUser(@RequestBody User user) {
         gsonBuilder.registerTypeAdapter(LocalDate.class, new LocalDateAdapter());
