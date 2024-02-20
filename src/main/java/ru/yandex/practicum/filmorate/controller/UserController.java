@@ -1,6 +1,7 @@
 package ru.yandex.practicum.filmorate.controller;
 
 import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
 import jakarta.validation.Valid;
 import jakarta.validation.ValidationException;
 import jakarta.validation.constraints.Email;
@@ -9,17 +10,21 @@ import jakarta.validation.constraints.Past;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.web.bind.annotation.*;
 
+import java.time.LocalDate;
 import java.util.HashMap;
 import ru.yandex.practicum.filmorate.model.User;
+import ru.yandex.practicum.filmorate.utils.LocalDateAdapter;
 
 @RestController
 @RequestMapping("/users")
 @Slf4j
 public class UserController {
     private final HashMap<Integer,User> userList = new HashMap<>();
-    private final Gson gson = new Gson();
+    private final GsonBuilder gsonBuilder = new GsonBuilder();
     @PostMapping()
-    public void createUser(@Valid @Email @NotBlank @Past User user) {
+    public void createUser(@RequestBody User user) {
+        gsonBuilder.registerTypeAdapter(LocalDate.class, new LocalDateAdapter());
+        Gson gson = gsonBuilder.create();
         try {
             userList.put(user.getId(), user);
         } catch (ValidationException e) {
@@ -28,7 +33,9 @@ public class UserController {
     }
 
     @PostMapping("/user")
-    public void updateUser(@RequestParam int value, @Valid @Email @NotBlank @Past User user) {
+    public void updateUser(@RequestParam int value, @RequestBody User user) {
+        gsonBuilder.registerTypeAdapter(LocalDate.class, new LocalDateAdapter());
+        Gson gson = gsonBuilder.create();
         User tempUser = userList.get(value);
         if (user.equals(tempUser)) {
             userList.put(user.getId(), user);
@@ -41,6 +48,8 @@ public class UserController {
 
     @GetMapping()
     public String getAllUsers() {
+        gsonBuilder.registerTypeAdapter(LocalDate.class, new LocalDateAdapter());
+        Gson gson = gsonBuilder.create();
         log.debug("Выгрузка пользователей");
         return gson.toJson(userList);
     }
