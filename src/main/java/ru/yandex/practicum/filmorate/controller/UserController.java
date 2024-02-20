@@ -2,11 +2,7 @@ package ru.yandex.practicum.filmorate.controller;
 
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
-import jakarta.validation.Valid;
 import jakarta.validation.ValidationException;
-import jakarta.validation.constraints.Email;
-import jakarta.validation.constraints.NotBlank;
-import jakarta.validation.constraints.Past;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.web.bind.annotation.*;
 
@@ -21,6 +17,7 @@ import ru.yandex.practicum.filmorate.utils.LocalDateAdapter;
 public class UserController {
     private final HashMap<Integer,User> userList = new HashMap<>();
     private final GsonBuilder gsonBuilder = new GsonBuilder();
+
     @PostMapping()
     public void createUser(@RequestBody User user) {
         gsonBuilder.registerTypeAdapter(LocalDate.class, new LocalDateAdapter());
