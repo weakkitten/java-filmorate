@@ -22,11 +22,14 @@ public class UserController {
 
     @PostMapping()
     public void createUser(@Valid @RequestBody User user) {
-        if (user.getName().contains(" ") || user.getLogin().contains(" ")) {
+        if (user.getLogin().contains(" ")) {
             throw new ValidationException("Не может содержать пробелы");
         } else {
             gsonBuilder.registerTypeAdapter(LocalDate.class, new LocalDateAdapter());
             Gson gson = gsonBuilder.create();
+            if (user.getName() == null || user.getName().isEmpty()) {
+                user.setName(user.getLogin());
+            }
             if (user.getId() == 0 && !userList.isEmpty()) {
                 user.setId(userList.size());
             }
@@ -44,12 +47,15 @@ public class UserController {
 
     @PostMapping("/user")
     public void updateUser(@RequestParam int value,@Valid @RequestBody User user) {
-        if (user.getName().contains(" ") || user.getLogin().contains(" ")) {
+        if (user.getLogin().contains(" ")) {
             throw new ValidationException("Не может содержать пробелы");
         } else {
             gsonBuilder.registerTypeAdapter(LocalDate.class, new LocalDateAdapter());
             Gson gson = gsonBuilder.create();
             User tempUser = userList.get(value);
+            if (user.getName() == null || user.getName().isEmpty()) {
+                user.setName(user.getLogin());
+            }
             if (user.equals(tempUser)) {
                 userList.put(user.getId(), user);
                 log.debug("Обновление прошло успешно");
