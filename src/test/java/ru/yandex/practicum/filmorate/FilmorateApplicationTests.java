@@ -29,8 +29,8 @@ class FilmorateApplicationTests {
 		SpringApplication.run(FilmorateApplication.class);
 		gsonBuilder.registerTypeAdapter(LocalDate.class, new LocalDateAdapter());
 		Gson gson = gsonBuilder.create();
-		Film fil = new Film(0, "", "", LocalDate.now(), 3600);
-		Film film = new Film(0, "Пользователь", "Описание", LocalDate.now(), 3600);
+		Film fil = new Film("", "", LocalDate.now(), 3600);
+		Film film = new Film("Пользователь", "Описание", LocalDate.now(), 3600);
 		String gsonString = gson.toJson(film);
 		HttpRequest request = HttpRequest.newBuilder()
 				.uri(URI.create("http://localhost:8080/films"))
