@@ -8,6 +8,7 @@ import ru.yandex.practicum.filmorate.exception.ValidationException;
 import ru.yandex.practicum.filmorate.model.Film;
 import ru.yandex.practicum.filmorate.utils.LocalDateAdapter;
 
+import javax.validation.Valid;
 import java.time.LocalDate;
 import java.util.HashMap;
 
@@ -20,7 +21,7 @@ public class FilmController {
     private final GsonBuilder gsonBuilder = new GsonBuilder();
 
     @PostMapping()
-    public String addFilm(@RequestBody Film film) {
+    public String addFilm(@Valid @RequestBody Film film) {
         gsonBuilder.registerTypeAdapter(LocalDate.class, new LocalDateAdapter());
         Gson gson = gsonBuilder.create();
         LocalDate firstFilm = LocalDate.ofYearDay(1985,362);
@@ -34,7 +35,7 @@ public class FilmController {
     }
 
     @PostMapping("/film")
-    public void refreshFilm(@RequestParam int value, @RequestBody Film film) {
+    public void refreshFilm(@RequestParam int value,@Valid @RequestBody Film film) {
         gsonBuilder.registerTypeAdapter(LocalDate.class, new LocalDateAdapter());
         Gson gson = gsonBuilder.create();
         Film tempFilm = filmMap.get(value);

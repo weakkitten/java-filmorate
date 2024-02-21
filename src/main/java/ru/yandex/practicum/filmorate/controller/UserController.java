@@ -11,6 +11,8 @@ import ru.yandex.practicum.filmorate.exception.ValidationException;
 import ru.yandex.practicum.filmorate.model.User;
 import ru.yandex.practicum.filmorate.utils.LocalDateAdapter;
 
+import javax.validation.Valid;
+
 @RestController
 @RequestMapping("/users")
 @Slf4j
@@ -19,7 +21,7 @@ public class UserController {
     private final GsonBuilder gsonBuilder = new GsonBuilder();
 
     @PostMapping()
-    public void createUser(@RequestBody User user) {
+    public void createUser(@Valid @RequestBody User user) {
         gsonBuilder.registerTypeAdapter(LocalDate.class, new LocalDateAdapter());
         Gson gson = gsonBuilder.create();
         try {
@@ -30,7 +32,7 @@ public class UserController {
     }
 
     @PostMapping("/user")
-    public void updateUser(@RequestParam int value, @RequestBody User user) {
+    public void updateUser(@RequestParam int value,@Valid @RequestBody User user) {
         gsonBuilder.registerTypeAdapter(LocalDate.class, new LocalDateAdapter());
         Gson gson = gsonBuilder.create();
         User tempUser = userList.get(value);
