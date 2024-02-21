@@ -22,31 +22,38 @@ public class UserController {
     private final GsonBuilder gsonBuilder = new GsonBuilder();
 
     @PostMapping()
-    @ResponseStatus(value = HttpStatus.CONFLICT, reason = "Пробелы в имени")
     public void createUser(@Valid @RequestBody User user) {
         gsonBuilder.registerTypeAdapter(LocalDate.class, new LocalDateAdapter());
         Gson gson = gsonBuilder.create();
-        if (user.getName().contains(" ")) {
-            throw new ValidationException("Не может содержать пробелы");
+        if (user.getId() == 0 && !userList.isEmpty()) {
+            user.setId(userList.size());
         }
-        try {
-            userList.put(user.getId(), user);
-        } catch (ValidationException e) {
-            e.getMessage();
+        if (user.getName().contains(" ") || user.getLogin().contains(" ")) {
+            throw new ValidationException("Не может содержать пробелы");
+        } else {
+            try {
+                userList.put(user.getId(), user);
+            } catch (ValidationException e) {
+                e.getMessage();
+            }
         }
     }
 
     @PostMapping("/user")
     public void updateUser(@RequestParam int value,@Valid @RequestBody User user) {
-        gsonBuilder.registerTypeAdapter(LocalDate.class, new LocalDateAdapter());
-        Gson gson = gsonBuilder.create();
-        User tempUser = userList.get(value);
-        if (user.equals(tempUser)) {
-            userList.put(user.getId(), user);
-            log.debug("Обновление прошло успешно");
+        if (user.getName().contains(" ") || user.getLogin().contains(" ")) {
+            throw new ValidationException("Не может содержать пробелы");
         } else {
-            log.debug("Пользователь не совпадает");
-            throw new ValidationException("Пользователь не совпадает");
+            gsonBuilder.registerTypeAdapter(LocalDate.class, new LocalDateAdapter());
+            Gson gson = gsonBuilder.create();
+            User tempUser = userList.get(value);
+            if (user.equals(tempUser)) {
+                userList.put(user.getId(), user);
+                log.debug("Обновление прошло успешно");
+            } else {
+                log.debug("Пользователь не совпадает");
+                throw new ValidationException("Пользователь не совпадает");
+            }
         }
     }
 

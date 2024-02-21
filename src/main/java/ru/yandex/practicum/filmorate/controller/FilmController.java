@@ -25,12 +25,16 @@ public class FilmController {
         gsonBuilder.registerTypeAdapter(LocalDate.class, new LocalDateAdapter());
         Gson gson = gsonBuilder.create();
         LocalDate firstFilm = LocalDate.ofYearDay(1985,362);
+        if (film.getId() == 0 && !filmMap.isEmpty()) {
+            film.setId(filmMap.size());
+        }
         if (film.getReleaseDate().isAfter(firstFilm)) {
             filmMap.put(film.getId(), film);
             log.debug("Фильм успешно добавлен");
         } else {
             throw new ValidationException("Фильмы не совпадают");
         }
+
         return film.toString();
     }
 

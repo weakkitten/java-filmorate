@@ -32,8 +32,6 @@ class FilmorateApplicationTests {
 		Gson gson = gsonBuilder.create();
 		Film fil = new Film(0, "", "", LocalDate.now(), 3600);
 		Film film = new Film(0, "Пользователь", "Описание", LocalDate.now(), 3600);
-		User user = new User(0,"bii99@rambler.ru", "ilyabykov", "Имя",
-				LocalDate.ofYearDay(1999, 207));
 		String gsonString = gson.toJson(film);
 		HttpRequest request = HttpRequest.newBuilder()
 				.uri(URI.create("http://localhost:8080/films"))
