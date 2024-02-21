@@ -23,7 +23,7 @@ public class FilmorateApplication {
 		HttpClient client = HttpClient.newHttpClient();
 		gsonBuilder.registerTypeAdapter(LocalDate.class, new LocalDateAdapter());
 		Gson gson = gsonBuilder.create();
-		User user = new User("bii99@rambler.ru", "ilyabykov", "Имя",
+		User user = new User("bii99@rambler.ru", "dolore", "Nick Name",
 				LocalDate.ofYearDay(1999, 207));
 		HttpRequest request = HttpRequest.newBuilder()
 				.uri(URI.create("http://localhost:8080/users"))
