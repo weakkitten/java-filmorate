@@ -3,6 +3,7 @@ package ru.yandex.practicum.filmorate.controller;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 
 import java.time.LocalDate;
@@ -21,9 +22,13 @@ public class UserController {
     private final GsonBuilder gsonBuilder = new GsonBuilder();
 
     @PostMapping()
+    @ResponseStatus(value = HttpStatus.CONFLICT, reason = "Пробелы в имени")
     public void createUser(@Valid @RequestBody User user) {
         gsonBuilder.registerTypeAdapter(LocalDate.class, new LocalDateAdapter());
         Gson gson = gsonBuilder.create();
+        if (user.getName().contains(" ")) {
+            throw new ValidationException("Не может содержать пробелы");
+        }
         try {
             userList.put(user.getId(), user);
         } catch (ValidationException e) {
