@@ -22,18 +22,22 @@ public class UserController {
 
     @PostMapping()
     public void createUser(@Valid @RequestBody User user) {
-        gsonBuilder.registerTypeAdapter(LocalDate.class, new LocalDateAdapter());
-        Gson gson = gsonBuilder.create();
-        if (user.getId() == 0 && !userList.isEmpty()) {
-            user.setId(userList.size());
-        }
         if (user.getName().contains(" ") || user.getLogin().contains(" ")) {
             throw new ValidationException("Не может содержать пробелы");
         } else {
-            try {
-                userList.put(user.getId(), user);
-            } catch (ValidationException e) {
-                e.getMessage();
+            gsonBuilder.registerTypeAdapter(LocalDate.class, new LocalDateAdapter());
+            Gson gson = gsonBuilder.create();
+            if (user.getId() == 0 && !userList.isEmpty()) {
+                user.setId(userList.size());
+            }
+            if (user.getName().contains(" ") || user.getLogin().contains(" ")) {
+                throw new ValidationException("Не может содержать пробелы");
+            } else {
+                try {
+                    userList.put(user.getId(), user);
+                } catch (ValidationException e) {
+                    e.getMessage();
+                }
             }
         }
     }
