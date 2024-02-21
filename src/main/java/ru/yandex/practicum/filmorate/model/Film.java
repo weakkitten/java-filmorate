@@ -19,5 +19,5 @@ public class Film {
     protected LocalDate releaseDate;
     @NonNull @Min(1)
     protected int duration;
-
+    protected int rate;
 }
