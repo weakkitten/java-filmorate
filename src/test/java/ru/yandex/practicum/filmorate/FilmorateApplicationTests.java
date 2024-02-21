@@ -1,9 +1,6 @@
 package ru.yandex.practicum.filmorate;
 
-import com.google.gson.Gson;
-import com.google.gson.GsonBuilder;
-import com.google.gson.JsonElement;
-import com.google.gson.JsonParser;
+import com.google.gson.*;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.SpringApplication;
@@ -29,9 +26,7 @@ class FilmorateApplicationTests {
 		SpringApplication.run(FilmorateApplication.class);
 		gsonBuilder.registerTypeAdapter(LocalDate.class, new LocalDateAdapter());
 		Gson gson = gsonBuilder.create();
-		Film fil = new Film("", "", LocalDate.now(), 3600);
 		Film film = new Film("Пользователь", "Описание", LocalDate.now(), 3600);
-		String gsonString = gson.toJson(film);
 		HttpRequest request = HttpRequest.newBuilder()
 				.uri(URI.create("http://localhost:8080/films"))
 				.header("Content-type","application/json ")
@@ -44,8 +39,10 @@ class FilmorateApplicationTests {
 		try {
 			HttpResponse<String> response = client.send(request, HttpResponse.BodyHandlers.ofString());
 			HttpResponse<String> responseSecond = client.send(requestLoad, HttpResponse.BodyHandlers.ofString());
-			JsonElement jsonElement = JsonParser.parseString(responseSecond.body().substring(5,responseSecond.body().length() - 1));
-			Assertions.assertEquals(film, gson.fromJson(jsonElement, Film.class));
+			JsonElement jsonElement = JsonParser.parseString(responseSecond.body());
+			JsonArray jsonArray = jsonElement.getAsJsonArray();
+			film.setId(1);
+			Assertions.assertEquals(film, gson.fromJson(jsonArray.get(0), Film.class));
 		} catch (IOException | InterruptedException e) {
             throw new RuntimeException(e);
         }

@@ -47,7 +47,7 @@ public class FilmController {
         Gson gson = gsonBuilder.create();
         LocalDate firstFilm = LocalDate.ofYearDay(1885,362);
 
-        if (film.getId() > filmMap.size()) {
+        if (film.getId() > filmMap.size()){
             throw new ValidationException("Слишком большой id");
         }
 
