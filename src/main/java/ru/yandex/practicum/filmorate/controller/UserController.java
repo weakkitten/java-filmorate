@@ -66,9 +66,26 @@ public class UserController {
         return gson.toJson(listUser);
     }
 
+    @PutMapping("/{id}/friends/{friendId}")
+    public String addFriend(@PathVariable int id, @PathVariable int friendId) {
+        userService.addFriend(id, friendId);
+        return gson.toJson(userService.getUserStorage().getUserList().get(id));
+    }
 
-    @DeleteMapping
-    public String deleteUser() {
-        return null;
+
+    @DeleteMapping("/{id}/friends/{friendId}")
+    public String deleteUser(@PathVariable int id, @PathVariable int friendId) {
+        userService.removeFriend(id, friendId);
+        return gson.toJson(userService.getUserStorage().getUserList().get(id));
+    }
+
+    @GetMapping("/{id}/friends")
+    public String returnFriend(@PathVariable int id) {
+        return gson.toJson(userService.getUserStorage().getUserList().get(id).getFriends());
+    }
+
+    @GetMapping("/{id}/friends/common/{otherId}")
+    public String getMutualFriend(@PathVariable int id, @PathVariable int otherId) {
+        return gson.toJson(userService.getMutualFriend(id, otherId));
     }
 }
