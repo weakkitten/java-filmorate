@@ -2,15 +2,16 @@ package ru.yandex.practicum.filmorate.controller;
 
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
 import java.time.LocalDate;
 import java.util.ArrayList;
-import java.util.HashMap;
 import ru.yandex.practicum.filmorate.exception.ValidationException;
 import ru.yandex.practicum.filmorate.model.User;
-import ru.yandex.practicum.filmorate.storage.user.UserStorage;
+import ru.yandex.practicum.filmorate.service.UserService;
 import ru.yandex.practicum.filmorate.utils.LocalDateAdapter;
 
 import javax.validation.Valid;
@@ -18,44 +19,41 @@ import javax.validation.Valid;
 @RestController
 @RequestMapping("/users")
 @Slf4j
+@RequiredArgsConstructor
 public class UserController {
-    private final HashMap<Integer,User> userList = new HashMap<>();
-    private final GsonBuilder gsonBuilder = new GsonBuilder();
+    @Autowired
+    private final UserService userService;
+    private final Gson gson = new GsonBuilder().registerTypeAdapter(LocalDate.class, new LocalDateAdapter()).create();
 
     @PostMapping()
-    public void createUser(@Valid @RequestBody User user) {
+    public String createUser(@Valid @RequestBody User user) {
         if (user.getLogin().contains(" ")) {
             throw new ValidationException("Логин не может содержать пробелы");
         } else {
             if (user.getName() == null || user.getName().isEmpty()) {
                 user.setName(user.getLogin());
             }
-            if (user.getId() == 0 && !userList.isEmpty()) {
-                user.setId(userList.size() + 1);
+            if (user.getId() == 0 && !userService.getUserStorage().getUserList().isEmpty()) {
+                user.setId(userService.getUserStorage().getUserList().size() + 1);
             } else {
                 user.setId(1);
             }
-            userList.put(userList.size(), user);
+            userService.getUserStorage().createUser(user);
             log.debug("Пользователь успешно создан");
-            gsonBuilder.registerTypeAdapter(LocalDate.class, new LocalDateAdapter());
-            Gson gson = gsonBuilder.create();
             return gson.toJson(user);
         }
     }
 
     @PutMapping("")
-    public void updateUser(@Valid @RequestBody User user) {
-        gsonBuilder.registerTypeAdapter(LocalDate.class, new LocalDateAdapter());
-        Gson gson = gsonBuilder.create();
-
-        if (user.getLogin().contains(" ") || user.getId() > userList.size()) {
+    public String updateUser(@Valid @RequestBody User user) {
+        if (user.getLogin().contains(" ") || user.getId() > userService.getUserStorage().getUserList().size()) {
             throw new ValidationException("Не может содержать пробелы");
         } else {
-            User tempUser = userList.get(user.getId());
+            User tempUser = userService.getUserStorage().getUserList().get(user.getId());
             if (user.getName() == null || user.getName().isEmpty()) {
                 user.setName(user.getLogin());
             }
-            userList.put(user.getId() - 1, user);
+            userService.getUserStorage().getUserList().put(user.getId() - 1, user);
             log.debug("Обновление прошло успешно");
             return gson.toJson(user);
         }
@@ -63,16 +61,14 @@ public class UserController {
 
     @GetMapping()
     public String getAllUsers() {
-        gsonBuilder.registerTypeAdapter(LocalDate.class, new LocalDateAdapter());
-        Gson gson = gsonBuilder.create();
         log.debug("Выгрузка пользователей");
-        ArrayList<User> listUser = new ArrayList<>(userList.values());
+        ArrayList<User> listUser = new ArrayList<>(userService.getUserStorage().getUserList().values());
         return gson.toJson(listUser);
     }
 
 
     @DeleteMapping
-    public void deleteUser() {
+    public String deleteUser() {
         return null;
     }
 }

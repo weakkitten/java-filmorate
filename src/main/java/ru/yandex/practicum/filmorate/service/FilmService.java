@@ -36,4 +36,8 @@ public class FilmService {
         }
         return returnedLikedList;
     }
+
+    public InMemoryFilmStorage getStorage() {
+        return filmStorage;
+    }
 }

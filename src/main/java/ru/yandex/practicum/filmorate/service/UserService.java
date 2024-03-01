@@ -2,8 +2,10 @@ package ru.yandex.practicum.filmorate.service;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+import ru.yandex.practicum.filmorate.model.User;
 import ru.yandex.practicum.filmorate.storage.user.InMemoryUserStorage;
-import ru.yandex.practicum.filmorate.storage.user.UserStorage;
+
+import java.util.ArrayList;
 
 @Service
 @RequiredArgsConstructor
@@ -11,14 +13,36 @@ public class UserService {
     protected final InMemoryUserStorage userStorage;
 
     public void addFriend(int idFriend1, int idFriend2) {
-        userStorage.getUserList().
+        User userFirst = userStorage.getUserList().get(idFriend1);
+        User userSecond = userStorage.getUserList().get(idFriend2);
+        userFirst.getFriends().add(idFriend2);
+        userSecond.getFriends().add(idFriend1);
+        userStorage.updateUser(userFirst);
+        userStorage.updateUser(userSecond);
     }
 
     public void removeFriend(int idFriend1, int idFriend2) {
-
+        User userFirst = userStorage.getUserList().get(idFriend1);
+        User userSecond = userStorage.getUserList().get(idFriend2);
+        userFirst.getFriends().remove(idFriend2);
+        userSecond.getFriends().remove(idFriend1);
+        userStorage.updateUser(userFirst);
+        userStorage.updateUser(userSecond);
     }
 
-    public void getMutualFriend(int idFriend1, int idFriend2) {
+    public ArrayList<User> getMutualFriend(int idFriend1, int idFriend2) {
+        User userFirst = userStorage.getUserList().get(idFriend1);
+        User userSecond = userStorage.getUserList().get(idFriend2);
+        ArrayList<User> mutalFriends = new ArrayList<>();
+        for (int idFirst : userFirst.getFriends()) {
+            if (userSecond.getFriends().contains(idFirst)) {
+                mutalFriends.add(userStorage.getUserList().get(idFirst));
+            }
+        }
+        return mutalFriends;
+    }
 
+    public InMemoryUserStorage getUserStorage() {
+        return userStorage;
     }
 }
