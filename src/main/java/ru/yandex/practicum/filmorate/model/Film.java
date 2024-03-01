@@ -7,9 +7,10 @@ import javax.validation.constraints.Min;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.Size;
 import java.time.LocalDate;
+import java.util.Set;
 
 @Data
-public class Film {
+public class Film implements Comparable<Film>{
     protected int id;
     @NonNull @NotBlank
     protected String name;
@@ -20,4 +21,11 @@ public class Film {
     @NonNull @Min(1)
     protected int duration;
     protected int rate;
+    protected int likeCount;
+    protected Set<Long> likeUserId;
+
+    @Override
+    public int compareTo(Film o) {
+        return this.likeCount - o.likeCount;
+    }
 }

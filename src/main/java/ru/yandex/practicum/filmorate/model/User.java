@@ -6,6 +6,7 @@ import javax.validation.constraints.Email;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.Past;
 import java.time.LocalDate;
+import java.util.Set;
 
 @Data
 public class User {
@@ -17,4 +18,5 @@ public class User {
     protected String name;
     @NonNull @Past
     protected LocalDate birthday;
+    protected Set<Integer> friends;
 }

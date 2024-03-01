@@ -3,6 +3,7 @@ package ru.yandex.practicum.filmorate.controller;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 import ru.yandex.practicum.filmorate.exception.ValidationException;
 import ru.yandex.practicum.filmorate.model.Film;
@@ -11,16 +12,13 @@ import ru.yandex.practicum.filmorate.utils.LocalDateAdapter;
 import javax.validation.Valid;
 import java.time.LocalDate;
 import java.util.ArrayList;
-import java.util.HashMap;
 
 @RestController
 @RequestMapping("/films")
 @Slf4j
 public class FilmController {
-    private final HashMap<Integer, Film> filmMap = new HashMap<>();
 
     private final GsonBuilder gsonBuilder = new GsonBuilder();
-
     @PostMapping()
     public String addFilm(@Valid @RequestBody Film film) {
         gsonBuilder.registerTypeAdapter(LocalDate.class, new LocalDateAdapter());

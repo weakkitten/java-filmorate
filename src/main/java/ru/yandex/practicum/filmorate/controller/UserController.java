@@ -10,6 +10,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import ru.yandex.practicum.filmorate.exception.ValidationException;
 import ru.yandex.practicum.filmorate.model.User;
+import ru.yandex.practicum.filmorate.storage.user.UserStorage;
 import ru.yandex.practicum.filmorate.utils.LocalDateAdapter;
 
 import javax.validation.Valid;
@@ -22,7 +23,7 @@ public class UserController {
     private final GsonBuilder gsonBuilder = new GsonBuilder();
 
     @PostMapping()
-    public String createUser(@Valid @RequestBody User user) {
+    public void createUser(@Valid @RequestBody User user) {
         if (user.getLogin().contains(" ")) {
             throw new ValidationException("Логин не может содержать пробелы");
         } else {
@@ -43,7 +44,7 @@ public class UserController {
     }
 
     @PutMapping("")
-    public String updateUser(@Valid @RequestBody User user) {
+    public void updateUser(@Valid @RequestBody User user) {
         gsonBuilder.registerTypeAdapter(LocalDate.class, new LocalDateAdapter());
         Gson gson = gsonBuilder.create();
 
@@ -67,5 +68,11 @@ public class UserController {
         log.debug("Выгрузка пользователей");
         ArrayList<User> listUser = new ArrayList<>(userList.values());
         return gson.toJson(listUser);
+    }
+
+
+    @DeleteMapping
+    public void deleteUser() {
+        return null;
     }
 }
