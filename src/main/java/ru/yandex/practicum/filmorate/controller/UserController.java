@@ -5,12 +5,16 @@ import com.google.gson.GsonBuilder;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 
 import java.time.LocalDate;
 import java.util.ArrayList;
+
+import org.springframework.web.server.ResponseStatusException;
 import ru.yandex.practicum.filmorate.exception.ValidationException;
 import ru.yandex.practicum.filmorate.model.User;
+import ru.yandex.practicum.filmorate.service.FilmService;
 import ru.yandex.practicum.filmorate.service.UserService;
 import ru.yandex.practicum.filmorate.utils.LocalDateAdapter;
 
@@ -53,7 +57,7 @@ public class UserController {
             if (user.getName() == null || user.getName().isEmpty()) {
                 user.setName(user.getLogin());
             }
-            userService.getUserStorage().getUserList().put(user.getId() - 1, user);
+            userService.getUserStorage().updateUser(user);
             log.debug("Обновление прошло успешно");
             return gson.toJson(user);
         }
@@ -87,5 +91,14 @@ public class UserController {
     @GetMapping("/{id}/friends/common/{otherId}")
     public String getMutualFriend(@PathVariable int id, @PathVariable int otherId) {
         return gson.toJson(userService.getMutualFriend(id, otherId));
+    }
+
+    @GetMapping("/{id}")
+    public String getUser(@PathVariable int id) {
+        if (userService.getUserStorage().getUserList().get(id) == null) {
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND);
+        } else {
+            return gson.toJson(userService.getUserStorage().getUserList().get(id));
+        }
     }
 }

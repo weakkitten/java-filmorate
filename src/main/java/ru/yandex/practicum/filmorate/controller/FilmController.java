@@ -5,7 +5,9 @@ import com.google.gson.GsonBuilder;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.server.ResponseStatusException;
 import ru.yandex.practicum.filmorate.exception.ValidationException;
 import ru.yandex.practicum.filmorate.model.Film;
 import ru.yandex.practicum.filmorate.service.FilmService;
@@ -29,8 +31,8 @@ public class FilmController {
     public String addFilm(@Valid @RequestBody Film film) {
         LocalDate firstFilm = LocalDate.ofYearDay(1895,362);
         if (film.getId() == 0 && !filmService.getStorage().getFilmMap().isEmpty()) {
-            film.setId(filmService.getStorage().getFilmMap().size());
-        } else {
+            film.setId(filmService.getStorage().getFilmMap().size() + 1);
+        } else if (film.getId() == 0 && filmService.getStorage().getFilmMap().isEmpty()) {
             film.setId(1);
         }
         if (film.getReleaseDate().isAfter(firstFilm)) {
@@ -64,5 +66,35 @@ public class FilmController {
         log.debug("Выгрузка прошла");
         ArrayList<Film> filmList = new ArrayList<>(filmService.getStorage().getFilmMap().values());
         return gson.toJson(filmList);
+    }
+
+    @PutMapping("/{id}/like/{userId}")
+    public String likeFilm(@PathVariable int id, @PathVariable int userId) {
+        filmService.addLike(userId, id);
+        return gson.toJson(filmService.getStorage().getFilmMap().get(id));
+    }
+
+    @DeleteMapping("/{id}/like/{userId}")
+    public String removeLike(@PathVariable int id, @PathVariable int userId) {
+        filmService.removeLike(userId, id);
+        return gson.toJson(filmService.getStorage().getFilmMap().get(id));
+    }
+
+    @GetMapping("/popular")
+    public String topFilms(@RequestParam int count) {
+        if (count != 0) {
+            return gson.toJson(filmService.getTopLikedFilms(count));
+        } else {
+            return gson.toJson(filmService.getTopLikedFilms(10));
+        }
+    }
+
+    @GetMapping("/{id}")
+    public String getFilm(@PathVariable int id) {
+        if (id > filmService.getStorage().getFilmMap().size()) {
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND);
+        } else {
+            return gson.toJson(filmService.getStorage().getFilmMap().get(id));
+        }
     }
 }
