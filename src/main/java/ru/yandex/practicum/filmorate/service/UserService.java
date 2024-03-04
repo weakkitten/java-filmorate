@@ -33,13 +33,15 @@ public class UserService {
     public ArrayList<User> getMutualFriend(int idFriend1, int idFriend2) {
         User userFirst = userStorage.getUserList().get(idFriend1);
         User userSecond = userStorage.getUserList().get(idFriend2);
-        ArrayList<User> mutalFriends = new ArrayList<>();
-        for (int idFirst : userFirst.getFriends()) {
-            if (userSecond.getFriends().contains(idFirst)) {
-                mutalFriends.add(userStorage.getUserList().get(idFirst));
+        ArrayList<User> mutualFriends = new ArrayList<>();
+        if (userSecond.getFriends() != null || userFirst.getFriends() != null) {
+            for (int idFirst : userFirst.getFriends()) {
+                if (userSecond.getFriends().contains(idFirst)) {
+                    mutualFriends.add(userStorage.getUserList().get(idFirst));
+                }
             }
         }
-        return mutalFriends;
+        return mutualFriends;
     }
 
     public InMemoryUserStorage getUserStorage() {
