@@ -11,7 +11,7 @@ import java.util.HashSet;
 import java.util.Set;
 
 @Data
-public class Film implements Comparable<Film>{
+public class Film implements Comparable<Film> {
     protected int id;
     @NonNull @NotBlank protected String name;
     @NonNull @Size(min = 1, max = 200) protected String description;
