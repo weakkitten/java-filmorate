@@ -27,6 +27,6 @@ public class Film implements Comparable<Film>{
 
     @Override
     public int compareTo(Film o) {
-        return this.likeCount - o.likeCount;
+        return o.likeCount - this.likeCount;
     }
 }

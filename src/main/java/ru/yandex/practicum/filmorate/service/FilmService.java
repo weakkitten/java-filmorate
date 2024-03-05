@@ -13,15 +13,18 @@ public class FilmService {
     protected final InMemoryFilmStorage filmStorage;
 
     public void addLike(int userId, int filmId) {
-        if (filmStorage.getFilmMap().get(filmId).getLikeUserId() == null) {
-            int like = filmStorage.getFilmMap().get(filmId).getLikeCount() + 1;
-            filmStorage.getFilmMap().get(filmId).setLikeCount(like);
-            filmStorage.getFilmMap().get(filmId).getLikeUserId().add(userId);
+        Film film = filmStorage.getFilmMap().get(filmId);
+        if (film.getLikeUserId() == null) {
+            int like = film.getLikeCount() + 1;
+            film.setLikeCount(like);
+            film.getLikeUserId().add(userId);
+            filmStorage.updateFilm(film);
         } else {
-            if (!filmStorage.getFilmMap().get(filmId).getLikeUserId().contains(userId)) {
-                int like = filmStorage.getFilmMap().get(filmId).getLikeCount() + 1;
-                filmStorage.getFilmMap().get(filmId).setLikeCount(like);
-                filmStorage.getFilmMap().get(filmId).getLikeUserId().add(userId);
+            if (!film.getLikeUserId().contains(userId)) {
+                int like = film.getLikeCount() + 1;
+                film.setLikeCount(like);
+                film.getLikeUserId().add(userId);
+                filmStorage.updateFilm(film);
             }
         }
     }

@@ -1,5 +1,6 @@
 package ru.yandex.practicum.filmorate.storage.film;
 
+import lombok.Getter;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
 import ru.yandex.practicum.filmorate.model.Film;
@@ -7,6 +8,7 @@ import ru.yandex.practicum.filmorate.model.Film;
 import java.util.HashMap;
 import java.util.TreeSet;
 
+@Getter
 @Slf4j
 @Component
 public class InMemoryFilmStorage implements FilmStorage {
@@ -17,7 +19,7 @@ public class InMemoryFilmStorage implements FilmStorage {
     public void addFilm(Film film) {
         filmMap.put(film.getId(), film);
         likedFilmSet.add(film);
-        System.out.println("В создании - " + likedFilmSet);
+        System.out.println("Вернули список" + likedFilmSet);
     }
 
     @Override
@@ -33,11 +35,4 @@ public class InMemoryFilmStorage implements FilmStorage {
         likedFilmSet.remove(film);
     }
 
-    public HashMap<Integer, Film> getFilmMap() {
-        return filmMap;
-    }
-
-    public TreeSet<Film> getLikedFilmSet() {
-        return likedFilmSet;
-    }
 }
