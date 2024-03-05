@@ -7,7 +7,7 @@ import java.util.HashMap;
 
 @Component
 @Slf4j
-public class InMemoryUserStorage implements UserStorage{
+public class InMemoryUserStorage implements UserStorage {
     protected final HashMap<Integer, User> userList = new HashMap<>();
 
     @Override
