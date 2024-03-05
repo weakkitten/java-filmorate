@@ -16,6 +16,7 @@ import ru.yandex.practicum.filmorate.utils.LocalDateAdapter;
 import javax.validation.Valid;
 import java.time.LocalDate;
 import java.util.ArrayList;
+import java.util.Optional;
 
 @RestController
 @RequestMapping("/films")
@@ -37,7 +38,7 @@ public class FilmController {
         }
         if (film.getReleaseDate().isAfter(firstFilm)) {
             filmService.getStorage().addFilm(film);
-            log.debug("Фильм успешно добавлен");
+            log.debug("Фильм успешно добавлен - " + film);
             return gson.toJson(film);
         } else {
             throw new ValidationException("Раньше дня рождения кино");
@@ -81,9 +82,9 @@ public class FilmController {
     }
 
     @GetMapping("/popular")
-    public String topFilms(@RequestParam int count) {
-        if (count != 0) {
-            return gson.toJson(filmService.getTopLikedFilms(count));
+    public String topFilms(@RequestParam(required = false) Optional<Integer> count) {
+        if (count.isPresent()) {
+            return gson.toJson(filmService.getTopLikedFilms(count.get()));
         } else {
             return gson.toJson(filmService.getTopLikedFilms(10));
         }

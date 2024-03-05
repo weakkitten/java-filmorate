@@ -16,16 +16,21 @@ public class InMemoryFilmStorage implements FilmStorage {
     @Override
     public void addFilm(Film film) {
         filmMap.put(film.getId(), film);
+        likedFilmSet.add(film);
+        System.out.println("В создании - " + likedFilmSet);
     }
 
     @Override
     public void updateFilm(Film film) {
         filmMap.put(film.getId(), film);
+        likedFilmSet.remove(filmMap.get(film.getId()));
+        likedFilmSet.add(film);
     }
 
     @Override
     public void deleteFilm(Film film) {
         filmMap.remove(film.getId());
+        likedFilmSet.remove(film);
     }
 
     public HashMap<Integer, Film> getFilmMap() {

@@ -72,8 +72,13 @@ public class UserController {
 
     @PutMapping("/{id}/friends/{friendId}")
     public String addFriend(@PathVariable int id, @PathVariable int friendId) {
-        userService.addFriend(id, friendId);
-        return gson.toJson(userService.getUserStorage().getUserList().get(id));
+        int size = userService.getUserStorage().getUserList().size();
+        if ((id > 0 && id <= size) && (friendId > 0 && friendId <= size)) {
+            userService.addFriend(id, friendId);
+            return gson.toJson(userService.getUserStorage().getUserList().get(id));
+        } else {
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND);
+        }
     }
 
 
@@ -85,7 +90,11 @@ public class UserController {
 
     @GetMapping("/{id}/friends")
     public String returnFriend(@PathVariable int id) {
-        return gson.toJson(userService.getUserStorage().getUserList().get(id).getFriends());
+        ArrayList<User> friendList = new ArrayList<>();
+        for (int idFriend : userService.getUserStorage().getUserList().get(id).getFriends()) {
+            friendList.add(userService.getUserStorage().getUserList().get(idFriend));
+        }
+        return gson.toJson(friendList);
     }
 
     @GetMapping("/{id}/friends/common/{otherId}")

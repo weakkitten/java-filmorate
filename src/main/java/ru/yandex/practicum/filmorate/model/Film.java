@@ -7,6 +7,7 @@ import javax.validation.constraints.Min;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.Size;
 import java.time.LocalDate;
+import java.util.HashSet;
 import java.util.Set;
 
 @Data
@@ -22,7 +23,7 @@ public class Film implements Comparable<Film>{
     protected int duration;
     protected int rate;
     protected int likeCount;
-    protected Set<Long> likeUserId;
+    protected Set<Integer> likeUserId = new HashSet<>();
 
     @Override
     public int compareTo(Film o) {
