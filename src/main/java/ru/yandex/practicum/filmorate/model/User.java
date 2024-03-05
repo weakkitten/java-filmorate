@@ -12,13 +12,10 @@ import java.util.Set;
 @Data
 public class User {
     protected int id;
-    @NonNull @Email @NotBlank
-    protected String email;
-    @NonNull @NotBlank
-    protected String login;
+    @NonNull @Email @NotBlank protected String email;
+    @NonNull @NotBlank protected String login;
     protected String name;
-    @NonNull @Past
-    protected LocalDate birthday;
+    @NonNull @Past protected LocalDate birthday;
     protected Set<Integer> friends = new HashSet<>();
 
     public void addFriend(int id) {
