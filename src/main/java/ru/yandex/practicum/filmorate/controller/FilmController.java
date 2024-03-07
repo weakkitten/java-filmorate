@@ -88,12 +88,8 @@ public class FilmController {
     }
 
     @GetMapping("/popular")
-    public String topFilms(@RequestParam(required = false) Optional<Integer> count) {
-        if (count.isPresent()) {
-            return gson.toJson(filmService.getTopLikedFilms(count.get()));
-        } else {
-            return gson.toJson(filmService.getTopLikedFilms(10));
-        }
+    public String topFilms(@RequestParam(defaultValue = "10") int count) {
+        return gson.toJson(filmService.getTopLikedFilms(count));
     }
 
     @GetMapping("/{id}")

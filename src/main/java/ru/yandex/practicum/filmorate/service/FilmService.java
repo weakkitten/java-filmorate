@@ -6,6 +6,7 @@ import ru.yandex.practicum.filmorate.model.Film;
 import ru.yandex.practicum.filmorate.storage.film.InMemoryFilmStorage;
 
 import java.util.ArrayList;
+import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
@@ -38,23 +39,12 @@ public class FilmService {
     }
 
     public ArrayList<Film> getTopLikedFilms(int count) {
-        ArrayList<Film> likedList = new ArrayList<>(filmStorage.getLikedFilmSet());
-        System.out.println("Весь список - " + likedList);
-        ArrayList<Film> returnedLikedList = new ArrayList<>();
-        if (!likedList.isEmpty()) {
-            if (count > likedList.size()) {
-                for (Film film : likedList) {
-                    returnedLikedList.add(0, film);
-                }
-            } else {
-                for (int i = 0; i < count; i++) {
-                    System.out.println(likedList.get(i));
-                    returnedLikedList.add(0, likedList.get(i));
-                }
-            }
-        }
-        return returnedLikedList;
+        return (ArrayList<Film>) filmStorage.getFilm().stream()
+                .sorted((f1, f2) -> Integer.compare(f2.getLikeCount(), f1.getLikeCount()))
+                .limit(count)
+                .collect(Collectors.toList());
     }
+
 
     public InMemoryFilmStorage getStorage() {
         return filmStorage;
