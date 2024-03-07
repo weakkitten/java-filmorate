@@ -16,7 +16,6 @@ import ru.yandex.practicum.filmorate.utils.LocalDateAdapter;
 import javax.validation.Valid;
 import java.time.LocalDate;
 import java.util.ArrayList;
-import java.util.Optional;
 
 @RestController
 @RequestMapping("/films")
