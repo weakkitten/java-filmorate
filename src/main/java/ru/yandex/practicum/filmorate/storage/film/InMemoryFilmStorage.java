@@ -28,6 +28,7 @@ public class InMemoryFilmStorage implements FilmStorage {
     public void deleteFilm(Film film) {
         filmMap.remove(film.getId());
     }
+    
     public ArrayList<Film> getFilm() {
         return new ArrayList<Film>(filmMap.values());
     }
