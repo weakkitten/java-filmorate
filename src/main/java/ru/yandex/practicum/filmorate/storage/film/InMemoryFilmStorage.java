@@ -4,7 +4,6 @@ import lombok.Getter;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
 import ru.yandex.practicum.filmorate.model.Film;
-
 import java.util.ArrayList;
 import java.util.HashMap;
 
@@ -28,9 +27,8 @@ public class InMemoryFilmStorage implements FilmStorage {
     public void deleteFilm(Film film) {
         filmMap.remove(film.getId());
     }
-    
+
     public ArrayList<Film> getFilm() {
         return new ArrayList<Film>(filmMap.values());
     }
-
 }
