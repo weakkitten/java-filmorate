@@ -4,6 +4,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import ru.yandex.practicum.filmorate.model.Film;
 import ru.yandex.practicum.filmorate.storage.film.InMemoryFilmStorage;
+import ru.yandex.practicum.filmorate.storage.film.dao.FilmDbStorage;
 
 import java.util.ArrayList;
 import java.util.stream.Collectors;
@@ -11,7 +12,7 @@ import java.util.stream.Collectors;
 @Service
 @RequiredArgsConstructor
 public class FilmService {
-    protected final InMemoryFilmStorage filmStorage;
+    protected final FilmDbStorage filmStorage;
 
     public void addLike(int userId, int filmId) {
         Film film = filmStorage.getFilmMap().get(filmId);
