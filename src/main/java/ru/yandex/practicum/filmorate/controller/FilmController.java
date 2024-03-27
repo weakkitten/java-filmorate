@@ -30,11 +30,11 @@ public class FilmController {
     @PostMapping()
     public String addFilm(@Valid @RequestBody Film film) {
         LocalDate firstFilm = LocalDate.ofYearDay(1895,362);
-        if (film.getId() == 0 && !filmService.getStorage().getFilmMap().isEmpty()) {
+/*        if (film.getId() == 0 && !filmService.getStorage().getFilmMap().isEmpty()) {
             film.setId(filmService.getStorage().getFilmMap().size() + 1);
         } else if (film.getId() == 0 && filmService.getStorage().getFilmMap().isEmpty()) {
             film.setId(1);
-        }
+        }*/
         if (film.getReleaseDate().isAfter(firstFilm)) {
             filmService.getStorage().addFilm(film);
             log.debug("Фильм успешно добавлен");

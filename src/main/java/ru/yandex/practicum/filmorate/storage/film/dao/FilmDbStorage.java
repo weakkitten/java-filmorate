@@ -9,6 +9,7 @@ import ru.yandex.practicum.filmorate.storage.film.FilmStorage;
 
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.Set;
 
@@ -47,6 +48,27 @@ public class FilmDbStorage implements FilmStorage {
     public Film getFilmById(int id) {
         String sqlQuery = "select * from films where id = ?";
         return jdbcTemplate.queryForObject(sqlQuery, this::mapRowToFilm, id);
+    }
+
+    public ArrayList<Film> getTopLikedFilms(int limit) {
+        ArrayList<Film> films = (ArrayList<Film>) this.jdbcTemplate.query(
+                "select first_name, last_name from t_actor",
+                (resultSet, rowNum) -> {
+                    String[] likeId = resultSet.getString("likeUserId").split(",");
+                    Set<Integer> likeSet = new HashSet<>();
+                    return Film.builder()
+                            .id(resultSet.getInt("id"))
+                            .description(resultSet.getString("description"))
+                            .releaseDate(resultSet.getDate("releasedate").toLocalDate())
+                            .duration(resultSet.getInt("duration"))
+                            .rate(resultSet.getInt("rate"))
+                            .likeCount(resultSet.getInt("likeCount"))
+                            .likeUserId(likeSet)
+                            .ageRating(MpaRating.valueOf(resultSet.getString("ageRating")))
+                            .genre(Genre.valueOf(resultSet.getString("genre")))
+                            .build();
+                });
+        return films;
     }
 
     private Film mapRowToFilm(ResultSet resultSet, int rowNum) throws SQLException {
