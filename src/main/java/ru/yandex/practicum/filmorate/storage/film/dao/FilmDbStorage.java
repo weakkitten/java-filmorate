@@ -101,7 +101,8 @@ public class FilmDbStorage implements FilmStorage {
                 "id",film.getId(),
                 "name", film.getName(),
                 "description", film.getReleaseDate(),
-                "duration", film.getDuration()
+                "duration", film.getDuration(),
+                "releaseDate", film.getReleaseDate()
         );
     }
 
