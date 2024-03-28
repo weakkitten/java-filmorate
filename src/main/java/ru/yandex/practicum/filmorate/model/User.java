@@ -18,18 +18,17 @@ public class User {
     @NonNull @Past protected LocalDate birthday;
     protected HashMap<Integer, FriendStatus> friends = new HashMap();
 
-    public void addFriend(int id, FriendStatus status) {
+    public void addFriend(int id) {
         if (!friends.containsKey(id)) {
-            friends.put(id, status);
-        } else {
-            FriendStatus friendStatus = friends.get(id);
-            if (friendStatus != status) {
-                friends.put(id, status);
-            }
+            friends.put(id, FriendStatus.WAITING);
         }
     }
 
     public void removeFriend(int id) {
         friends.remove(id);
+    }
+
+    public void confirmFriend(int id) {
+        friends.put(id, FriendStatus.CONFIRMED);
     }
 }

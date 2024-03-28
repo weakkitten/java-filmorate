@@ -47,7 +47,7 @@ public class FilmController {
     @PutMapping()
     public String refreshFilm(@Valid @RequestBody Film film) {
         LocalDate firstFilm = LocalDate.ofYearDay(1885,362);
-        if (film.getId() > filmService.getStorage().getFilmMap().size()) {
+        if (film.getId() > filmService.getStorage().getMaxId()) {
             throw new ValidationException("Слишком большой id");
         }
         if (film.getReleaseDate().isAfter(firstFilm)) {
@@ -62,7 +62,7 @@ public class FilmController {
     @GetMapping()
     public String getAllFilm() {
         log.debug("Выгрузка прошла");
-        ArrayList<Film> filmList = new ArrayList<>(filmService.getStorage().getFilmMap().values());
+        ArrayList<Film> filmList = filmService.getAllFilms();
         return gson.toJson(filmList);
     }
 
@@ -73,7 +73,7 @@ public class FilmController {
         } else {
             throw new ResponseStatusException(HttpStatus.NOT_FOUND);
         }
-        return gson.toJson(filmService.getStorage().getFilmMap().get(id));
+        return gson.toJson(filmService.getStorage().getFilmById(id));
     }
 
     @DeleteMapping("/{id}/like/{userId}")
@@ -83,7 +83,7 @@ public class FilmController {
         } else {
             throw new ResponseStatusException(HttpStatus.NOT_FOUND);
         }
-        return gson.toJson(filmService.getStorage().getFilmMap().get(id));
+        return gson.toJson(filmService.getStorage().getFilmById(id));
     }
 
     @GetMapping("/popular")
@@ -93,10 +93,10 @@ public class FilmController {
 
     @GetMapping("/{id}")
     public String getFilm(@PathVariable int id) {
-        if (id > filmService.getStorage().getFilmMap().size()) {
+        if (id > filmService.getStorage().getMaxId()) {
             throw new ResponseStatusException(HttpStatus.NOT_FOUND);
         } else {
-            return gson.toJson(filmService.getStorage().getFilmMap().get(id));
+            return gson.toJson(filmService.getStorage().getFilmById(id));
         }
     }
 }

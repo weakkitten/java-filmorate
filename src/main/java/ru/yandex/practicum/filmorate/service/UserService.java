@@ -4,7 +4,7 @@ import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import ru.yandex.practicum.filmorate.model.User;
-import ru.yandex.practicum.filmorate.storage.user.InMemoryUserStorage;
+import ru.yandex.practicum.filmorate.storage.user.dao.UserDbStorage;
 
 import java.util.ArrayList;
 
@@ -12,38 +12,45 @@ import java.util.ArrayList;
 @Service
 @RequiredArgsConstructor
 public class UserService {
-    protected final InMemoryUserStorage userStorage;
+    protected final UserDbStorage userStorage;
 
     public void addFriend(Integer idFriend1, Integer idFriend2) {
-        User userFirst = userStorage.getUserList().get(idFriend1);
-        User userSecond = userStorage.getUserList().get(idFriend2);
+        User userFirst = userStorage.getUserById(idFriend1);
         userFirst.addFriend(idFriend2);
-        userSecond.addFriend(idFriend1);
         userStorage.updateUser(userFirst);
-        userStorage.updateUser(userSecond);
+    }
+
+    public void confirmedFriend(Integer idFriend1, Integer idFriend2) {
+        User userFirst = userStorage.getUserById(idFriend1);
+        userFirst.confirmFriend(idFriend2);
+        userStorage.updateUser(userFirst);
     }
 
     public void removeFriend(int idFriend1, int idFriend2) {
-        User userFirst = userStorage.getUserList().get(idFriend1);
-        User userSecond = userStorage.getUserList().get(idFriend2);
+        User userFirst = userStorage.getUserById(idFriend1);
         userFirst.removeFriend(idFriend2);
-        userSecond.removeFriend(idFriend1);
         userStorage.updateUser(userFirst);
-        userStorage.updateUser(userSecond);
     }
 
     public ArrayList<User> getMutualFriend(int idFriend1, int idFriend2) {
-        User userFirst = userStorage.getUserList().get(idFriend1);
-        User userSecond = userStorage.getUserList().get(idFriend2);
+        User userFirst = userStorage.getUserById(idFriend1);
+        User userSecond = userStorage.getUserById(idFriend2);
         ArrayList<User> mutualFriends = new ArrayList<>();
         if (userSecond.getFriends() != null || userFirst.getFriends() != null) {
-            for (int idFirst : userFirst.getFriends()) {
-                if (userSecond.getFriends().contains(idFirst)) {
-                    mutualFriends.add(userStorage.getUserList().get(idFirst));
+            for (int idFirst : userFirst.getFriends().keySet()) {
+                if (userSecond.getFriends().containsKey(idFirst)) {
+                    mutualFriends.add(userStorage.getUserById(idFirst));
                 }
             }
         }
         return mutualFriends;
     }
 
+    public ArrayList<User> getAllUsers() {
+        return userStorage.getAllUsers();
+    }
+
+    public Integer getSize() {
+        return userStorage.getMaxId();
+    }
 }

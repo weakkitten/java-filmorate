@@ -46,4 +46,10 @@ public class FilmService {
     public FilmDbStorage getStorage() {
         return filmStorage;
     }
+
+    public ArrayList<Film> getAllFilms() {
+        return filmStorage.getAllFilms();
+    }
+
+
 }

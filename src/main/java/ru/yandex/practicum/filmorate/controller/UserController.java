@@ -36,11 +36,11 @@ public class UserController {
             if (user.getName() == null || user.getName().isEmpty()) {
                 user.setName(user.getLogin());
             }
-            if (user.getId() == 0 && !userService.getUserStorage().getUserList().isEmpty()) {
+/*            if (user.getId() == 0 && !userService.getUserStorage().getUserList().isEmpty()) {
                 user.setId(userService.getUserStorage().getUserList().size() + 1);
             } else {
                 user.setId(1);
-            }
+            }*/
             userService.getUserStorage().createUser(user);
             log.debug("Пользователь успешно создан");
             return gson.toJson(user);
@@ -49,10 +49,10 @@ public class UserController {
 
     @PutMapping("")
     public String updateUser(@Valid @RequestBody User user) {
-        if (user.getLogin().contains(" ") || user.getId() > userService.getUserStorage().getUserList().size()) {
+        if (user.getLogin().contains(" ")) {
             throw new ValidationException("Не может содержать пробелы");
         } else {
-            User tempUser = userService.getUserStorage().getUserList().get(user.getId());
+            User tempUser = userService.getUserStorage().getUserById(user.getId());
             if (user.getName() == null || user.getName().isEmpty()) {
                 user.setName(user.getLogin());
             }
@@ -65,16 +65,16 @@ public class UserController {
     @GetMapping()
     public String getAllUsers() {
         log.debug("Выгрузка пользователей");
-        ArrayList<User> listUser = new ArrayList<>(userService.getUserStorage().getUserList().values());
+        ArrayList<User> listUser = userService.getAllUsers();
         return gson.toJson(listUser);
     }
 
     @PutMapping("/{id}/friends/{friendId}")
     public String addFriend(@PathVariable int id, @PathVariable int friendId) {
-        int size = userService.getUserStorage().getUserList().size();
+        int size = userService.getSize();
         if ((id > 0 && id <= size) && (friendId > 0 && friendId <= size)) {
             userService.addFriend(id, friendId);
-            return gson.toJson(userService.getUserStorage().getUserList().get(id));
+            return gson.toJson(userService.getUserStorage().getUserById(id));
         } else {
             throw new ResponseStatusException(HttpStatus.NOT_FOUND);
         }
@@ -84,14 +84,14 @@ public class UserController {
     @DeleteMapping("/{id}/friends/{friendId}")
     public String deleteUser(@PathVariable int id, @PathVariable int friendId) {
         userService.removeFriend(id, friendId);
-        return gson.toJson(userService.getUserStorage().getUserList().get(id));
+        return gson.toJson(userService.getUserStorage().getUserById(id));
     }
 
     @GetMapping("/{id}/friends")
     public String returnFriend(@PathVariable int id) {
         ArrayList<User> friendList = new ArrayList<>();
-        for (int idFriend : userService.getUserStorage().getUserList().get(id).getFriends()) {
-            friendList.add(userService.getUserStorage().getUserList().get(idFriend));
+        for (int idFriend : userService.getUserStorage().getUserById(id).getFriends().keySet()) {
+            friendList.add(userService.getUserStorage().getUserById(idFriend));
         }
         return gson.toJson(friendList);
     }
@@ -103,10 +103,10 @@ public class UserController {
 
     @GetMapping("/{id}")
     public String getUser(@PathVariable int id) {
-        if (userService.getUserStorage().getUserList().get(id) == null) {
+        if (userService.getUserStorage().getUserById(id) == null) {
             throw new ResponseStatusException(HttpStatus.NOT_FOUND);
         } else {
-            return gson.toJson(userService.getUserStorage().getUserList().get(id));
+            return gson.toJson(userService.getUserStorage().getUserById(id));
         }
     }
 }

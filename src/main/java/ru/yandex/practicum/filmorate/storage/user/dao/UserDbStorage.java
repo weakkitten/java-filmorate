@@ -2,18 +2,22 @@ package ru.yandex.practicum.filmorate.storage.user.dao;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.JdbcTemplate;
+import org.springframework.stereotype.Component;
 import ru.yandex.practicum.filmorate.model.*;
 import ru.yandex.practicum.filmorate.storage.user.UserStorage;
 
+import java.sql.DatabaseMetaData;
+import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.HashSet;
-import java.util.Set;
 
+@Component
 public class UserDbStorage implements UserStorage {
     @Autowired
     private final JdbcTemplate jdbcTemplate;
+    private DatabaseMetaData Util;
 
     public UserDbStorage(JdbcTemplate jdbcTemplate) {
         this.jdbcTemplate = jdbcTemplate;
@@ -59,5 +63,34 @@ public class UserDbStorage implements UserStorage {
                 .birthday(resultSet.getDate("BIRTHDAY").toLocalDate())
                 .friends(friendsSet)
                 .build();
+    }
+
+    public ArrayList<User> getAllUsers() {
+        ArrayList<User> users = new ArrayList<>();
+        String sql = "SELECT * FROM users";
+        try (PreparedStatement ps = Util.getConnection().prepareStatement(sql);
+             ResultSet rs = ps.executeQuery()
+        ) {
+            while (rs.next()) {
+                String[] friendsId = rs.getString("likeUserId").split(",");
+                HashMap<Integer, FriendStatus> friendsSet = new HashMap<>();
+                User user = User.builder()
+                        .id(rs.getInt("id"))
+                        .email(rs.getString("email"))
+                        .login(rs.getString("login"))
+                        .name(rs.getString("name"))
+                        .birthday(rs.getDate("BIRTHDAY").toLocalDate())
+                        .friends(friendsSet)
+                        .build();
+                users.add(user);
+            }
+        } catch (SQLException ignored) {
+        }
+        return users;
+    }
+
+    public Integer getMaxId() {
+        String sqlQuery = "select MAX(id) from users";
+        return jdbcTemplate.queryForObject(sqlQuery, Integer.class);
     }
 }
